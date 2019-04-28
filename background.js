@@ -9,7 +9,6 @@ class Kaleidoscope {
     sectionCount = 48,
     speed = 0.2
   }) {
-    console.log(image)
     image = PIXI.Texture.fromImage(image)
     this.speed = speed
     this.maskImages = []

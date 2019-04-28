@@ -89,7 +89,6 @@ class Game {
   hurt(damage) {
     let time = 500
     this.playerHealth -= damage
-    console.log(this.playerHealth)
     kaleidoscopes[0].setTint(this.hurtColor, time)
     kaleidoscopes[0].setSpeed(this.hurtSpeed, time)
     setTimeout(() => {
