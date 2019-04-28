@@ -1,17 +1,97 @@
 <html>
+  <!-- HEAD {{{--> 
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/pixi-filters@2.6.1/dist/pixi-filters.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/plugins/PixiPlugin.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
+  <!-- }}} HEAD --> 
   <body>
-    <div id="background">
+    <div id="background"></div>
+    <div id="top-marquee">
+      <!-- RESOURCES {{{ -->
+      <div class="icon-container">
+        <div id="water" class="icon hidden">
+          <i class="fas fa-water"></i>
+          <span class="badge">-</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="icon-container">
+        <div id="leaf" class="icon hidden">
+          <i class="fas fa-leaf"></i>
+          <span class="badge">-</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="icon-container">
+        <div id="bug" class="icon hidden">
+          <i class="fas fa-bug"></i>
+          <span class="badge">-</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="icon-container">
+        <div id="frog" class="icon hidden">
+          <i class="fas fa-frog"></i>
+          <span class="badge">-</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="icon-container">
+        <div id="tree" class="icon hidden">
+          <i class="fas fa-tree"></i>
+          <span class="badge">-</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="icon-container">
+        <div id="cat" class="icon hidden">
+          <i class="fas fa-cat"></i>
+          <span class="badge">9090</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="icon-container">
+        <div id="crow" class="icon hidden">
+          <i class="fas fa-crow"></i>
+          <span class="badge">9090</span>
+          <div class="breed-bar-container">
+            <div class="breed-bar"></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="top-marquee"></div>
+    <!-- }}} RESOURCES -->
+    <div id="health"></div>
     <div id="bottom-marquee">
+      <div class="health-bar-container">
+        <div class="health-bar-slot"></div>
+        <div id="health-bar"></div>
+      </div>
       <div id="message">
-        Welcome, child.
+        Welcome, Child.
         <br/>
         <br/>
         <br/>
@@ -25,5 +105,8 @@
   <script src="./background.js"></script>
   <script src="./interface.js"></script>
   <script src="./script.js"></script>
+  <script src="./resource.js"></script>
   <script src="./game.js"></script>
 </html>
+
+<!-- set foldmethod=marker -->

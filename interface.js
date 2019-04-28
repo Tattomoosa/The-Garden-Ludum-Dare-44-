@@ -8,7 +8,7 @@ let colors = [
   0x93ff97,
   0x35a9ff,
 ]
-let kaleidoscope
+let kaleidoscopes = []
 let maskImages = []
 let containers = []
 let radius = 4000
@@ -25,22 +25,15 @@ const app = new PIXI.Application({
 })
 document.querySelector('#background').appendChild(app.view)
 
-
-// Kaleidoscope
-let image = PIXI.Texture.fromImage('http://placekitten.com/820/850')
-
-// kaleidoscope = createKaleidoscope()
-kaleidoscope = new Kaleidoscope()
-kaleidoscope.animate()
-// animate()
-
 // Resize
 function resize() {
   const parent = app.view.parentNode
   width = parent.clientWidth
   height = parent.clientHeight
   app.renderer.resize(width, height)
-  // kaleidoscope.position.set(width / 2, height / 2)
+  for (let i = 0; i < kaleidoscopes.length; ++i) {
+    kaleidoscopes[i].pixiContainer.position.set(width / 2, height / 2)
+  }
 }
 resize()
 window.addEventListener('resize', resize)
