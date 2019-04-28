@@ -17,6 +17,7 @@ class Resource {
     // callbacks
     this.updateCallback = callbacks.update
     this.takeCallback = callbacks.onTake
+    this.returnWaterCallback = callbacks.returnWater
     // needs
     for (let need in this.needs) {
       if (!this.needs.hasOwnProperty(need)) continue
@@ -52,24 +53,53 @@ class Resource {
       let breedPercent = Math.min(((this.breedingCounter / this.breedingRate)) * 100, 100)
       this.breedbar.style.width = breedPercent + '%'
     }
+    // Take
     for (let need in this.needs) {
+      // take needs
       if (!this.needs.hasOwnProperty(need)) continue
       let needObj = this.needs[need]
       needObj.counter += deltaTime * this.count * needObj.ratio
       while (needObj.counter > needObj.time) {
         needObj.counter -= needObj.time
-        if (this.takeCallback(this, need, 1))
-          needObj.held.push(needObj.cooldown)
+        let domElement = this.takeCallback(this, need, 1)
+        if (domElement)
+          needObj.held.push({
+            name: need,
+            cooldown: needObj.cooldown,
+            domElement: domElement
+          })
+        else
+          this.change(-1)
       }
+      // return/destroy needs
       let toDestroy = []
       // TODO: push domelement into here and handle ordering it to move back from here.
       for (let i = 0; i < needObj.held.length; ++i) {
-        needObj.held[i] -= deltaTime
-        if (needObj.held[i] < 0)
-          toDestroy.push(needObj.held[i])
+        needObj.held[i].cooldown -= deltaTime
+        if (needObj.held[i].cooldown < 0) toDestroy.push(i)
       }
-      for (let i = 0; i < toDestroy.length; ++i) {
-        toDestroy.pop()
+      for (let i = toDestroy.length - 1; i >= 0; --i) {
+        let index = toDestroy.pop()
+        let domElement = needObj.held[index].domElement;
+        if (needObj.held[index].name == 'water') {
+          this.returnWaterCallback(domElement, 1);
+        } else {
+          domElement.style.top = '40%'
+          domElement.classList.add('hidden')
+        }
+        setTimeout(() => { domElement.parentNode.removeChild(domElement) }, 8000)
+        // does this work?
+        for (let j = index; j > 0; --j) {
+          let domElement = needObj.held[j].domElement
+          let left = domElement.style.left.replace('px', '')
+          let top = domElement.style.left.replace('px', '')
+          console.log(left, top)
+          domElement.style.left = (left + 2) + 'px'
+          domElement.style.top = (top + 2) + 'px'
+        }
+
+        // console.log(needObj.held[index])
+        needObj.held.splice(index, 1)
       }
     }
   }

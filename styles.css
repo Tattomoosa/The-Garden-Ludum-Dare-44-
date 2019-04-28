@@ -234,21 +234,21 @@ html, body {
   color: #8ec07c;
 }
 
-#frog.icon {
+#token-board .token .icon.fa-frog {
   color: #d3869b;
 }
 
-#tree.icon {
+#token-board .token .icon.fa-tree {
   color: #427b58;
 }
 
-#bug.icon {
+#token-board .token .icon.fa-bug {
   color: #928374;
 }
-#cat.icon {
+#token-board .token .icon.fa-cat {
   color: #fe8019;
 }
-#crow.icon {
+#token-board .token .icon.fa-crow {
   color: #fb4934;
 }
 

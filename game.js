@@ -1,9 +1,55 @@
 let scriptIndex = 0
 
+function toAdvanceDefault() { return true }
+
+let activeScene = {
+  scene: script.intro,
+  // scene: script.skipIntro,
+  index: 0,
+  isActive: true,
+  toAdvance: toAdvanceDefault,
+  buttons: false,
+  game: {},
+  current() {
+    return this.scene[this.index]
+  },
+  setActive() {
+    this.index = 0
+    this.isActive = true
+  },
+  triggeredScenes: [],
+  checkSceneTriggers() {
+    console.log("SCENE TRIGGA!")
+    if (!this.triggeredScenes.includes('bugs') &&
+        this.game.resources.leaf.count >= 10) {
+      console.log("TRIGGERING BUGS")
+      this.scene = script.bugs
+      this.setActive()
+      busy = false
+      this.triggeredScenes.push('bugs')
+      if (sceneContinue) 
+        sceneContinue()
+    }
+    if (!this.triggeredScenes.includes('frogs') &&
+        this.game.resources.bug.count >= 10) {
+      console.log("TRIGGERING FROGS")
+      this.scene = script.frogs
+      this.setActive()
+      busy = false
+      this.triggeredScenes.push('frogs')
+      if (sceneContinue) 
+        sceneContinue()
+    }
+  },
+}
+
+let busy = false;
+let sceneContinue;
+
 class Game {
   constructor() {
     this.hurtRecoveryTime = 8
-    this.healthRecoveryRate = 0.04
+    this.healthRecoveryRate = 0.08
     this.tickRate = 0.1
     // this.hurtColor = '#ff2222'
     this.hurtColor = '#241919'
@@ -12,47 +58,81 @@ class Game {
     this.playerHealth = 100
     let resource_callbacks = {
       update: (cost, clicked) => this.onResourceUpdate(cost, clicked),
-      onTake: (from, to, count) => this.onTake(from, to, count)
+      onTake: (from, to, count) => this.onTake(from, to, count),
+      returnWater: (element, amount) => this.returnWaterCallback(element, amount)
     }
+    activeScene.game = this
     this.healthDOM = document.querySelector('#health-bar')
     // RESOURCES {{{
     this.resources = {
       water: new Resource('water', resource_callbacks, {
         count: 4,
-        cost: 20,
+        cost: 10,
         breedingRate: 0,
         breedingPopulation: 0,
         canBreed: false,
       }),
       leaf: new Resource('leaf', resource_callbacks, {
-        count: 1,
-        cost: 35,
-        breedingRate: 20,
-        breedingPopulation: 5,
+        count: 0,
+        cost: 8,
+        breedingRate: 600,
+        breedingPopulation: 1,
         canBreed: true,
         needs: {
           water: {
-            cooldown: 2,
-            ratio : 1/4,
-            time: 4
+            cooldown: 6,
+            ratio : 1/2,
+            time: 12
           },
         }
       }),
       bug: new Resource('bug', resource_callbacks, {
         count: 0,
-        cost: 10,
-        breedingRate: 20,
-        breedingPopulation: 5,
+        cost: 12,
+        breedingRate: 100,
+        breedingPopulation: 1,
         canBreed: true,
+        needs: {
+          water: {
+            cooldown: 4,
+            ratio: 1/8,
+            time: 16
+          },
+          leaf: {
+            cooldown: 4,
+            ratio: 1/4,
+            time: 30
+          }
+        }
       }),
       frog: new Resource('frog', resource_callbacks, {
         count: 0,
         cost: 10,
-        breedingRate: 20,
-        breedingPopulation: 5,
+        breedingRate: 400,
+        breedingPopulation: 1,
         canBreed: true,
+        canBreed: true,
+        needs: {
+          water: {
+            cooldown: 4,
+            ratio: 1/6,
+            time: 12
+          },
+          bug: {
+            cooldown: 2,
+            ratio: 1/4,
+            time: 16
+          }
+        }
       }),
       tree: new Resource('tree', resource_callbacks, {
+        count: 0,
+        cost: 10,
+        breedingRate: 20,
+        breedingPopulation: 1,
+        canBreed: true,
+      }),
+      crow: new Resource('crow', resource_callbacks, {
         count: 0,
         cost: 10,
         breedingRate: 20,
@@ -63,14 +143,7 @@ class Game {
         count: 0,
         cost: 10,
         breedingRate: 20,
-        breedingPopulation: 5,
-        canBreed: true,
-      }),
-      crow: new Resource('crow', resource_callbacks, {
-        count: 0,
-        cost: 10,
-        breedingRate: 20,
-        breedingPopulation: 5,
+        breedingPopulation: 1,
         canBreed: true,
       }),
     }
@@ -85,6 +158,8 @@ class Game {
       this.resources[resource].tick(this.tickRate)
     }
     this.heal(this.healthRecoveryRate)
+    if (activeScene)
+      activeScene.checkSceneTriggers()
   }
 
   hurt(damage) {
@@ -93,9 +168,12 @@ class Game {
     this.playerHealth -= damage
     kaleidoscopes[0].setTint(this.hurtColor, time)
     kaleidoscopes[0].setSpeed(this.hurtSpeed, 0)
+    music.rate(0.5)
     setTimeout(() => {
-      kaleidoscopes[0].setTint(this.calculateTint(), this.hurtRecoveryTime * 4000)
+      kaleidoscopes[0].setTint(this.calculateTint(), this.hurtRecoveryTime * 1500)
       kaleidoscopes[0].setSpeed(this.normalSpeed, this.hurtRecoveryTime * 1000)
+      // MUSIC
+      recoverMusic(this.hurtRecoveryTime * 1)
     }, time + delay)
     this.updatePlayerHealth()
   }
@@ -127,7 +205,8 @@ class Game {
 
   onTake(from, to, amount) {
     to = this.resources[to]
-    console.log(from, "takes " + amount, to)
+    if (to.count < amount) return false;
+    // console.log(from, "takes " + amount, to)
     let element = document.createElement("div")
     element.classList.add('badge')
     element.classList.add('token')
@@ -136,46 +215,52 @@ class Game {
     icon.classList.add('icon')
     icon.classList.add('fas')
     icon.classList.add('fa-' + to.name)
-    console.log(element)
-    console.log(icon)
+    // console.log(element)
+    // console.log(icon)
     element.style.left = to.domElement.getBoundingClientRect().left
     element.style.top = to.domElement.getBoundingClientRect().top
     let destination = from.domElement.getBoundingClientRect()
     let domelement = document.querySelector('#token-board').appendChild(element)
-    domelement.style.transition = '2s top, 2s left'
+    domelement.style.transition = '2s top, 2s left, 0.5s opacity'
     let held = from.needs[to.name].held
-    held.push(domelement)
+    // held.push(domelement)
+    to.change(-amount)
     setTimeout(() => {
       domelement.style.left = destination.left - held.length * 2 + 'px'
       domelement.style.top = destination.top - held.length * 2 + 'px'
     }, 200)
+    return domelement;
 
 
     //TweenMax('#token-board', 2, { top: destination.top + 'px', left: destination.left + 'px' })
   }
 
+  returnWaterCallback(domElement, amount) {
+    domElement.style.transition = '1s top, 1s left, .5s opacity'
+    domElement.style.left = this.resources.water.domElement.getBoundingClientRect().left
+    domElement.style.top = this.resources.water.domElement.getBoundingClientRect().top
+    setTimeout(() => {
+      domElement.classList.add('hidden')
+      this.resources.water.change(amount)
+    }, 1000)
+  }
+
   calculateTint() {
+    let colors = {
+      water: '#548588',
+      leaf: '#8ec07c',
+      frog: '#d3869b',
+      tree: '#427b58',
+
+    }
     return 0x22ccdd;
+    // return 0xffffff;
+    // return colors.water;
   }
 
 }
 
 let game = new Game()
-function toAdvanceDefault() { return true }
-
-let activeScene = {
-  // scene: script.intro,
-  scene: script.skipIntro,
-  index: 0,
-  isActive: true,
-  toAdvance: toAdvanceDefault,
-  buttons: false,
-  current() {
-    return this.scene[this.index]
-  }
-}
-
-let busy = false;
 
 let scene = {
   continue() {
@@ -194,7 +279,7 @@ let scene = {
     if (current.doHurt)
       this.doHurt(current.doHurt)
     if (current.heal)
-      game.heal(current.heal)
+      this.doHeal(current.heal)
     if (current.toAdvance)
       activeScene.toAdvance = current.toAdvance
     else activeScene.toAdvance = toAdvanceDefault
@@ -212,11 +297,19 @@ let scene = {
     }
   },
 
+  doHeal(amount) {
+      game.heal(amount)
+      kaleidoscopes[0].setSpeed(game.normalSpeed, game.hurtRecoveryTime * 1000)
+      recoverMusic(this.hurtRecoveryTime * 1)
+  },
+
   // Does NOT play normal hurt animation
   doHurt(cost) {
     // game.hurt(cost)
     game.playerHealth -= cost
     game.updatePlayerHealth()
+    kaleidoscopes[0].setSpeed(0.001, 0.4)
+    music.rate(0.5)
   },
 
   resourceUpdate(which) {
@@ -226,7 +319,7 @@ let scene = {
     for (let key in which) {
       if (!which.hasOwnProperty(key)) continue;
       let count = which[key]
-      game.resources[key].change(count, )
+      game.resources[key].change(count)
     }
   },
 
@@ -236,6 +329,7 @@ let scene = {
     // set text
     message.innerText = text
     // set tint
+    // THIS DISABLED BUTTONS BUT MAYBE I WANT EM ALWAYS ENABLED
     activeScene.buttons = current.buttons || false
     if (current.resourceUpdate)
       this.resourceUpdate(current.resourceUpdate)
@@ -253,22 +347,32 @@ let scene = {
   },
 
   redrawStep2() {
-      message.classList.remove('hidden')
-      busy = false;
+    message.classList.remove('hidden')
+    setTimeout(() => { busy = false; }, 500)
   },
 
   // }}}
 }
 
+sceneContinue = () => scene.continue()
+
 kaleidoscopes[0] = new Kaleidoscope({
   image: './ivy_grey.jpg',
-  tint: game.calculateTint(),
+  // tint: game.calculateTint(),
+  tint: 0x121212,
   speed: game.normalSpeed
 })
 
+let onButtons = false
+
+document.querySelector('#top-marquee').onmouseover = () => { onButtons = true }
+document.querySelector('#top-marquee').onmouseout = () => { onButtons = false }
+
 window.addEventListener('click', (event) => {
+  if (onButtons && !activeScene.buttons) return
   if (activeScene.isActive && !busy) {
-    if (activeScene.toAdvance(game))
+    if (activeScene.toAdvance(game)) {
       scene.continue()
+    }
   }
 })
