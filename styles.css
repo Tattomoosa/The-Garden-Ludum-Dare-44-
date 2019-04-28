@@ -70,7 +70,7 @@ html, body {
   opacity: 0;
 }
 .icon-container {
-  width: 14%;
+  width: 16%;
   display: inline-block;
   text-align: center;
   margin: 0;
@@ -208,6 +208,7 @@ html, body {
   bottom: 0;
   pointer-events: none;
 }
+
 #token-board .token {
   position: absolute;
   top: 20px;
@@ -217,6 +218,7 @@ html, body {
   background-color: #282828;
   border: 1px solid #a89984;
 }
+
 #token-board .token .icon {
   position: absolute;
   left: -12px;

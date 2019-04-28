@@ -18,6 +18,7 @@ let activeScene = {
     this.isActive = true
   },
   triggeredScenes: [],
+  // SCENETRIGGERS {{{
   checkSceneTriggers() {
     console.log("SCENE TRIGGA!")
     if (!this.triggeredScenes.includes('bugs') &&
@@ -40,7 +41,38 @@ let activeScene = {
       if (sceneContinue) 
         sceneContinue()
     }
+    if (!this.triggeredScenes.includes('crows') &&
+        this.game.resources.frog.count >= 10) {
+      console.log("TRIGGERING CROWS")
+      this.scene = script.crows
+      this.setActive()
+      busy = false
+      this.triggeredScenes.push('crows')
+      if (sceneContinue) 
+        sceneContinue()
+    }
+    if (!this.triggeredScenes.includes('cats') &&
+        this.game.resources.crow.count >= 10) {
+      console.log("TRIGGERING CROWS")
+      this.scene = script.cats
+      this.setActive()
+      busy = false
+      this.triggeredScenes.push('cats')
+      if (sceneContinue) 
+        sceneContinue()
+    }
+    if (!this.triggeredScenes.includes('ending') &&
+        this.game.resources.crow.count >= 10) {
+      console.log("TRIGGERING END")
+      this.scene = script.ending
+      this.setActive()
+      busy = false
+      this.triggeredScenes.push('ending')
+      if (sceneContinue) 
+        sceneContinue()
+    }
   },
+  // }}}
 }
 
 let busy = false;
@@ -49,7 +81,7 @@ let sceneContinue;
 class Game {
   constructor() {
     this.hurtRecoveryTime = 8
-    this.healthRecoveryRate = 0.08
+    this.healthRecoveryRate = 0.05
     this.tickRate = 0.1
     // this.hurtColor = '#ff2222'
     this.hurtColor = '#241919'
@@ -82,7 +114,7 @@ class Game {
           water: {
             cooldown: 6,
             ratio : 1/2,
-            time: 12
+            time: 10
           },
         }
       }),
@@ -119,12 +151,13 @@ class Game {
             time: 12
           },
           bug: {
-            cooldown: 2,
+            cooldown: 3,
             ratio: 1/4,
-            time: 16
+            time: 12
           }
         }
       }),
+      /*
       tree: new Resource('tree', resource_callbacks, {
         count: 0,
         cost: 10,
@@ -132,19 +165,54 @@ class Game {
         breedingPopulation: 1,
         canBreed: true,
       }),
+      */
       crow: new Resource('crow', resource_callbacks, {
         count: 0,
         cost: 10,
-        breedingRate: 20,
-        breedingPopulation: 5,
+        breedingRate: 300,
+        breedingPopulation: 1,
         canBreed: true,
+        needs: {
+          water: {
+            cooldown: 4,
+            ratio: 1/8,
+            time: 20
+          },
+          bug: {
+            cooldown: 3,
+            ratio: 1/2,
+            time: 16
+          },
+          frog: {
+            cooldown: 3,
+            ratio: 1/4,
+            time: 30
+          }
+        }
       }),
       cat: new Resource('cat', resource_callbacks, {
         count: 0,
         cost: 10,
-        breedingRate: 20,
+        breedingRate: 400,
         breedingPopulation: 1,
         canBreed: true,
+        needs: {
+          water: {
+            cooldown: 4,
+            ratio: 1/8,
+            time: 12
+          },
+          frog: {
+            cooldown: 3,
+            ratio: 1/4,
+            time: 16
+          },
+          crow: {
+            cooldown: 3,
+            ratio: 1/4,
+            time: 20
+          },
+        }
       }),
     }
     // }}}
@@ -300,7 +368,7 @@ let scene = {
   doHeal(amount) {
       game.heal(amount)
       kaleidoscopes[0].setSpeed(game.normalSpeed, game.hurtRecoveryTime * 1000)
-      recoverMusic(this.hurtRecoveryTime * 1)
+      recoverMusic(2)
   },
 
   // Does NOT play normal hurt animation

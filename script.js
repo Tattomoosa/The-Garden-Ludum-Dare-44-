@@ -17,7 +17,7 @@ let script = {
     },
   ],
   intro: [
-    "I have something to show you.",
+    "Come, I have something to show you.",
     {
       message: "This is a garden, of your very own.",
       // setImage: 'http://place-puppy.com/200x200',
@@ -25,11 +25,8 @@ let script = {
       duration: eventTime * 3,
     },
     "It is just like mine.",
-    "Well, maybe a bit smaller. For now.",
-    {
-      message: "Everything in your garden depends on water.",
-      // resourceUpdate: { water: 10 },
-    },
+    "Well, a bit smaller. For now.",
+    "Everything in your garden depends on water.",
     {
       message: "You should create some now.",
       iconAppear: ["water"],
@@ -42,7 +39,7 @@ let script = {
     {
       message: "Ooh. That hurt, didn't it?",
       setTint: '#333333',
-      doHurt: 20,
+      doHurt: 40,
       duration: eventTime * 0.2,
     },
    "Creation takes a lot out of us.",
@@ -57,7 +54,7 @@ let script = {
       // resourceUpdate: { water: 5 },
     },
     {
-      message: "The presence of water will bring plants.",
+      message: "The presence of water has caused plants to grow.",
       iconAppear: ["leaf"],
       resourceUpdate: { leaf: 5 },
     },
@@ -65,6 +62,7 @@ let script = {
     "Water is returned once it is used, ",
     "But if a plant can't find any water to drink, it will die.",
     "Plants will slowly reproduce on their own.",
+    "More plants will reproduce more quickly.",
     "I will return once you have 10 plants.",
     ],
   bugs: [
@@ -72,7 +70,7 @@ let script = {
     {
       message: "Bugs have come to eat the plants",
       iconAppear: ["bug"],
-      resourceUpdate: { bug: 5 },
+      resourceUpdate: { bug: 2 },
     },
     "They still require water, too... but not much.",
     "Plants do not return once consumed the way the water does.",
@@ -85,10 +83,28 @@ let script = {
     {
       message: "Frogs have appeared to eat the bugs",
       iconAppear: ["frog"],
-      resourceUpdate: {frog: 5}
+      resourceUpdate: {frog: 3 }
     },
     "Be careful, if any species go extinct...",
     "Well. Please don't let that happen."
   ],
+  crows: [
+    {
+      message: "Birds have followed the frog's croaking here.",
+      iconAppear: ["crow"],
+      resourceUpdate: { crow: 3 }
+    },
+  ],
+  cats: [
+    {
+      message: "Cats have seen the birds circling the garden",
+      iconAppear: ["cat"],
+      resourceUpdate: { cat: 3 }
+    },
+  ],
+  ending: [
+    "You have created a remarkable garden.",
+    "Congratulations.",
+  ]
 
 }

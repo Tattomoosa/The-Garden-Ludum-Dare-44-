@@ -73,7 +73,6 @@ class Resource {
       }
       // return/destroy needs
       let toDestroy = []
-      // TODO: push domelement into here and handle ordering it to move back from here.
       for (let i = 0; i < needObj.held.length; ++i) {
         needObj.held[i].cooldown -= deltaTime
         if (needObj.held[i].cooldown < 0) toDestroy.push(i)
