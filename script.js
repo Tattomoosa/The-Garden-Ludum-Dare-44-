@@ -90,7 +90,7 @@ let script = {
   ],
   crows: [
     {
-      message: "Birds have followed the frog's croaking here.",
+      message: "Birds have followed the frogs' croaking here.",
       iconAppear: ["crow"],
       resourceUpdate: { crow: 3 }
     },

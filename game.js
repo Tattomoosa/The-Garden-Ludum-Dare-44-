@@ -31,7 +31,7 @@ let activeScene = {
       if (sceneContinue) 
         sceneContinue()
     }
-    if (!this.triggeredScenes.includes('frogs') &&
+    else if (!this.triggeredScenes.includes('frogs') &&
         this.game.resources.bug.count >= 10) {
       console.log("TRIGGERING FROGS")
       this.scene = script.frogs
@@ -41,7 +41,7 @@ let activeScene = {
       if (sceneContinue) 
         sceneContinue()
     }
-    if (!this.triggeredScenes.includes('crows') &&
+    else if (!this.triggeredScenes.includes('crows') &&
         this.game.resources.frog.count >= 10) {
       console.log("TRIGGERING CROWS")
       this.scene = script.crows
@@ -51,7 +51,7 @@ let activeScene = {
       if (sceneContinue) 
         sceneContinue()
     }
-    if (!this.triggeredScenes.includes('cats') &&
+    else if (!this.triggeredScenes.includes('cats') &&
         this.game.resources.crow.count >= 10) {
       console.log("TRIGGERING CROWS")
       this.scene = script.cats
@@ -61,8 +61,8 @@ let activeScene = {
       if (sceneContinue) 
         sceneContinue()
     }
-    if (!this.triggeredScenes.includes('ending') &&
-        this.game.resources.crow.count >= 10) {
+    else if (!this.triggeredScenes.includes('ending') &&
+        this.game.resources.cat.count >= 10) {
       console.log("TRIGGERING END")
       this.scene = script.ending
       this.setActive()
