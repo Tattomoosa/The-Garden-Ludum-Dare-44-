@@ -17,6 +17,13 @@ class Resource {
     // callbacks
     this.updateCallback = callbacks.update
     this.takeCallback = callbacks.onTake
+    // needs
+    for (let need in this.needs) {
+      if (!this.needs.hasOwnProperty(need)) continue
+      let needObj = this.needs[need]
+      needObj.counter = 0
+      needObj.held = []
+    }
 
     if (!this.canBreed)
       this.breedbar.parentNode.style.display = "none"
@@ -46,7 +53,24 @@ class Resource {
       this.breedbar.style.width = breedPercent + '%'
     }
     for (let need in this.needs) {
-
+      if (!this.needs.hasOwnProperty(need)) continue
+      let needObj = this.needs[need]
+      needObj.counter += deltaTime * this.count * needObj.ratio
+      while (needObj.counter > needObj.time) {
+        needObj.counter -= needObj.time
+        if (this.takeCallback(this, need, 1))
+          needObj.held.push(needObj.cooldown)
+      }
+      let toDestroy = []
+      // TODO: push domelement into here and handle ordering it to move back from here.
+      for (let i = 0; i < needObj.held.length; ++i) {
+        needObj.held[i] -= deltaTime
+        if (needObj.held[i] < 0)
+          toDestroy.push(needObj.held[i])
+      }
+      for (let i = 0; i < toDestroy.length; ++i) {
+        toDestroy.pop()
+      }
     }
   }
 

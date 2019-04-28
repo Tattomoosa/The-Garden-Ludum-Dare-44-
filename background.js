@@ -6,7 +6,7 @@ class Kaleidoscope {
   constructor({
     image = 'http://placekitten.com/820/850',
     tint = 0x333333,
-    sectionCount = 48,
+    sectionCount = 44,
     speed = 0.2
   }) {
     image = PIXI.Texture.fromImage(image)
@@ -54,7 +54,7 @@ class Kaleidoscope {
       timer += this.speed
       for (let i = 0;i < this.sectionCount; i++) {
         this.maskImages[i].tilePosition.y = targetPos.y + timer
-        this.maskImages[i].tilePosition.x = targetPos.x + timer
+        this.maskImages[i].tilePosition.x = targetPos.x + timer * 2
         this.containers[i].rotation = (arc * i) + (timer / 500)
       }
     })

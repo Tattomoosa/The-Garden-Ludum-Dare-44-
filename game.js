@@ -3,12 +3,12 @@ let scriptIndex = 0
 class Game {
   constructor() {
     this.hurtRecoveryTime = 8
-    this.healthRecoveryRate = 0.08
+    this.healthRecoveryRate = 0.04
     this.tickRate = 0.1
     // this.hurtColor = '#ff2222'
-    this.hurtColor = '#222'
-    this.hurtSpeed = 0.02
-    this.normalSpeed = 0.3
+    this.hurtColor = '#241919'
+    this.normalSpeed = 0.15
+    this.hurtSpeed = -this.normalSpeed * 1.4
     this.playerHealth = 100
     let resource_callbacks = {
       update: (cost, clicked) => this.onResourceUpdate(cost, clicked),
@@ -32,8 +32,9 @@ class Game {
         canBreed: true,
         needs: {
           water: {
+            cooldown: 2,
             ratio : 1/4,
-            time: 2
+            time: 4
           },
         }
       }),
@@ -87,14 +88,15 @@ class Game {
   }
 
   hurt(damage) {
-    let time = 500
+    let time = 300
+    let delay = 50
     this.playerHealth -= damage
     kaleidoscopes[0].setTint(this.hurtColor, time)
-    kaleidoscopes[0].setSpeed(this.hurtSpeed, time)
+    kaleidoscopes[0].setSpeed(this.hurtSpeed, 0)
     setTimeout(() => {
-      kaleidoscopes[0].setTint(this.calculateTint(), this.hurtRecoveryTime * 1000)
+      kaleidoscopes[0].setTint(this.calculateTint(), this.hurtRecoveryTime * 4000)
       kaleidoscopes[0].setSpeed(this.normalSpeed, this.hurtRecoveryTime * 1000)
-    }, time)
+    }, time + delay)
     this.updatePlayerHealth()
   }
 
@@ -126,6 +128,30 @@ class Game {
   onTake(from, to, amount) {
     to = this.resources[to]
     console.log(from, "takes " + amount, to)
+    let element = document.createElement("div")
+    element.classList.add('badge')
+    element.classList.add('token')
+    let icon = document.createElement("i")
+    element.appendChild(icon)
+    icon.classList.add('icon')
+    icon.classList.add('fas')
+    icon.classList.add('fa-' + to.name)
+    console.log(element)
+    console.log(icon)
+    element.style.left = to.domElement.getBoundingClientRect().left
+    element.style.top = to.domElement.getBoundingClientRect().top
+    let destination = from.domElement.getBoundingClientRect()
+    let domelement = document.querySelector('#token-board').appendChild(element)
+    domelement.style.transition = '2s top, 2s left'
+    let held = from.needs[to.name].held
+    held.push(domelement)
+    setTimeout(() => {
+      domelement.style.left = destination.left - held.length * 2 + 'px'
+      domelement.style.top = destination.top - held.length * 2 + 'px'
+    }, 200)
+
+
+    //TweenMax('#token-board', 2, { top: destination.top + 'px', left: destination.left + 'px' })
   }
 
   calculateTint() {
@@ -235,8 +261,8 @@ let scene = {
 }
 
 kaleidoscopes[0] = new Kaleidoscope({
-  image: './ivy_texture.jpg',
-  tint: 0x333354,
+  image: './ivy_grey.jpg',
+  tint: game.calculateTint(),
   speed: game.normalSpeed
 })
 
