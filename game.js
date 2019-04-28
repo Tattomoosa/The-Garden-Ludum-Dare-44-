@@ -121,7 +121,7 @@ class Game {
       bug: new Resource('bug', resource_callbacks, {
         count: 0,
         cost: 12,
-        breedingRate: 100,
+        breedingRate: 80,
         breedingPopulation: 1,
         canBreed: true,
         needs: {
@@ -132,7 +132,7 @@ class Game {
           },
           leaf: {
             cooldown: 4,
-            ratio: 1/4,
+            ratio: 1/8,
             time: 30
           }
         }

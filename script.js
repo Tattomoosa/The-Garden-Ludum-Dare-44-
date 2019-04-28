@@ -105,6 +105,7 @@ let script = {
   ending: [
     "You have created a remarkable garden.",
     "Congratulations.",
+    "This is the end, but please feel free to keep playing",
   ]
 
 }
