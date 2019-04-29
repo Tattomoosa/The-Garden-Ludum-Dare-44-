@@ -180,8 +180,8 @@ class Game {
           },
           bug: {
             cooldown: 3,
-            ratio: 1/2,
-            time: 16
+            ratio: 1/6,
+            time: 24
           },
           frog: {
             cooldown: 3,
