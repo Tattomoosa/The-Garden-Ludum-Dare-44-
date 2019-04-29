@@ -63,10 +63,10 @@ let script = {
     "But if a plant can't find any water to drink, it will die.",
     "Plants will slowly reproduce on their own.",
     "More plants will reproduce more quickly.",
-    "I will return once you have 10 plants.",
+    "Maybe something will happen once you have enough plants...",
     ],
   bugs: [
-   "Very good.",
+   "Would you look at that?",
     {
       message: "Bugs have come to eat the plants",
       iconAppear: ["bug"],
@@ -80,6 +80,7 @@ let script = {
     "but I have faith in you.",
   ],
   frogs: [
+    "It seems we have a new visitor",
     {
       message: "Frogs have appeared to eat the bugs",
       iconAppear: ["frog"],
@@ -89,6 +90,7 @@ let script = {
     "Well. Please don't let that happen."
   ],
   crows: [
+    "Looks like we have more company",
     {
       message: "Birds have followed the frogs' croaking here.",
       iconAppear: ["crow"],
@@ -96,6 +98,7 @@ let script = {
     },
   ],
   cats: [
+    "Someone else has arrived",
     {
       message: "Cats have seen the birds circling the garden",
       iconAppear: ["cat"],

@@ -44,7 +44,7 @@ class Resource {
   tick(deltaTime) {
     if (this.count >= this.breedingPopulation)
       this.breedingCounter += deltaTime * (this.count / this.breedingPopulation)
-    // console.log("breedingCounter", this.breedingCounter)
+    // Breed
     if (this.canBreed) {
       if (this.breedingCounter > this.breedingRate) {
         this.breedingCounter -= this.breedingRate

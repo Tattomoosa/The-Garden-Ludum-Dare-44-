@@ -107,7 +107,7 @@ class Game {
       leaf: new Resource('leaf', resource_callbacks, {
         count: 0,
         cost: 8,
-        breedingRate: 600,
+        breedingRate: 500,
         breedingPopulation: 1,
         canBreed: true,
         needs: {
@@ -121,7 +121,7 @@ class Game {
       bug: new Resource('bug', resource_callbacks, {
         count: 0,
         cost: 12,
-        breedingRate: 80,
+        breedingRate: 150,
         breedingPopulation: 1,
         canBreed: true,
         needs: {
@@ -186,7 +186,7 @@ class Game {
           frog: {
             cooldown: 3,
             ratio: 1/4,
-            time: 30
+            time: 34
           }
         }
       }),
@@ -205,12 +205,12 @@ class Game {
           frog: {
             cooldown: 3,
             ratio: 1/4,
-            time: 16
+            time: 24
           },
           crow: {
             cooldown: 3,
             ratio: 1/4,
-            time: 20
+            time: 26
           },
         }
       }),
@@ -399,6 +399,11 @@ let scene = {
     // set tint
     // THIS DISABLED BUTTONS BUT MAYBE I WANT EM ALWAYS ENABLED
     activeScene.buttons = current.buttons || false
+    // buttons
+    if (activeScene.buttons)
+      document.querySelector('#fade-buttons').classList = 'hidden'
+    else document.querySelector('#fade-buttons').classList = ''
+
     if (current.resourceUpdate)
       this.resourceUpdate(current.resourceUpdate)
     if (current.setTint)
@@ -409,6 +414,7 @@ let scene = {
     if (activeScene.scene.length <= activeScene.index++) {
       activeScene.sceneName = ''
       activeScene.isActive = false
+      document.querySelector('#fade-buttons').classList = 'hidden'
     }
     // update message
     else setTimeout(this.redrawStep2, duration)
