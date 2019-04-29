@@ -109,6 +109,19 @@ let script = {
     "You have created a remarkable garden.",
     "Congratulations.",
     "This is the end, but please feel free to keep playing",
+  ],
+  dead: [
+    {
+      message: "It was a difficult task that I entrusted you with",
+      setTint: '#333333',
+      doHurt: 100,
+    },
+    "I see now that you were not up for it",
+    "Click to try again",
+    {
+      message: "...",
+      doDeath: true,
+    }
   ]
 
 }

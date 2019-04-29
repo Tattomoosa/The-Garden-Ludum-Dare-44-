@@ -10,6 +10,7 @@ let activeScene = {
   toAdvance: toAdvanceDefault,
   buttons: false,
   game: {},
+  doDeath: false,
   current() {
     return this.scene[this.index]
   },
@@ -20,7 +21,7 @@ let activeScene = {
   triggeredScenes: [],
   // SCENETRIGGERS {{{
   checkSceneTriggers() {
-    console.log("SCENE TRIGGA!")
+    if (activeScene.isActive) return;
     if (!this.triggeredScenes.includes('bugs') &&
         this.game.resources.leaf.count >= 10) {
       console.log("TRIGGERING BUGS")
@@ -71,7 +72,19 @@ let activeScene = {
       if (sceneContinue) 
         sceneContinue()
     }
+    else if (this.doDeath && !this.triggeredScenes.includes('dead')) {
+      console.log("TRIGGERING DEATH")
+      this.scene = script.dead
+      this.setActive()
+      busy = false
+      this.triggeredScenes.push('dead')
+      if (sceneContinue) 
+        sceneContinue()
+    }
   },
+  deathSceneTrigger() {
+    this.doDeath = true
+  }
   // }}}
 }
 
@@ -224,10 +237,17 @@ class Game {
     for (let resource in this.resources) {
       if (!this.resources.hasOwnProperty(resource)) continue;
       this.resources[resource].tick(this.tickRate)
+      // OH GOD SO GROSS
+      if (this.resources[resource].count <= 0 &&
+        !this.resources[resource].domElement.classList.contains('hidden')) {
+        // alert('ded')
+        activeScene.deathSceneTrigger()
+      }
     }
     this.heal(this.healthRecoveryRate)
     if (activeScene)
       activeScene.checkSceneTriggers()
+
   }
 
   hurt(damage) {
@@ -256,8 +276,10 @@ class Game {
 
   updatePlayerHealth() {
     this.healthDOM.style = 'width: ' + this.playerHealth + '%;'
-    if (this.playerHealth == 0)
-      alert("u ded")
+    if (this.playerHealth == 0) {
+      // alert('ded')
+      activeScene.deathSceneTrigger()
+    }
   }
 
   onResourceUpdate(cost, clicked) {
@@ -344,6 +366,9 @@ let scene = {
     busy = true;
     let duration = 1000
     // set toAdvance function
+    if (current.doDeath)
+      location.reload()
+
     if (current.doHurt)
       this.doHurt(current.doHurt)
     if (current.heal)
